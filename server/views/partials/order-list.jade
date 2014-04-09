@@ -1,0 +1,34 @@
+.container
+  h2 Order List
+  hr
+  .pull-right
+    form.form-inline
+      .form-group
+        input.form-control(ng-model="filterText", placeholder="Filter")
+
+  table.table.table-condensed.table-hover
+    thead
+      tr
+        th.col-md-5
+          a(href="", ng-click="predicate = 'name'; reverse = !reverse") Order name&nbsp;
+            span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'name' && !reverse")
+            span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'name' && reverse")
+        th.col-md-3
+          a(href="", ng-click="predicate = 'created'; reverse = !reverse") Created on&nbsp;
+            span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'created' && !reverse")
+            span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'created' && reverse")
+        th.col-md-2
+          a(href="", ng-click="predicate = 'total'; reverse = !reverse") Total&nbsp;
+            span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'total' && !reverse")
+            span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'total' && reverse")
+        th.col-md-1 Edit
+        th.col-md-1 Delete
+    tbody
+      tr(ng-repeat="order in orders | filter: filterText | orderBy: predicate: !reverse")
+        td {{ order.name }}
+        td {{ order.created | date: 'mediumDate' }}
+        td {{ order.total | currency }}
+        td
+          span.glyphicon.glyphicon-edit.cursor-hand(ng-click="editOrder(order)")
+        td
+          span.glyphicon.glyphicon-remove.cursor-hand(ng-click="deleteOrder(order)")
