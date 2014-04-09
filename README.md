@@ -1,0 +1,4 @@
+SRPlanner
+=========
+
+A MEAN Application.
