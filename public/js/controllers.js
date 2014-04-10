@@ -8,7 +8,8 @@ srPlanner.controller('OrderListCtrl', function ($scope, $route, OrderData) {
 
     $scope.editOrder = function (order) {
         console.log('Edit order: ' + order._id);
-    }
+    };
+
     $scope.deleteOrder = function (order) {
         OrderData.deleteOrder(order).$promise.then(function () {
             console.log('delete success');
@@ -22,17 +23,18 @@ srPlanner.controller('OrderListCtrl', function ($scope, $route, OrderData) {
 srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData, OrderData) {
     $scope.order = {};
     $scope.order.products = ProductData.getAllProducts();
+    $scope.intReg = /^\d+$/;
 
     $scope.order.total = 0.0;
-    $scope.change = function (products) {
+    $scope.calcTotal = function () {
         $scope.order.total = 0.0;
-        for (var i = 0; i < products.length; ++i) {
-            var product = products[i];
+        for (var i = 0; i < $scope.order.products.length; ++i) {
+            var product = $scope.order.products[i];
             if (product.hasOwnProperty('quantity') && !isNaN(parseInt(product.quantity, 10))) {
                 $scope.order.total += product.member_price * parseInt(product.quantity, 10);
             }
         }
-    }
+    };
 
     $scope.createOrder = function (order) {
         order.created = new Date();
@@ -45,12 +47,45 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData
     }
 });
 
+srPlanner.controller('OrderEditCtrl', function ($scope, OrderData) {
+
+});
+
 srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
     $scope.products = ProductData.getAllProducts();
+    $scope.floatReg = /^\d+(\.\d+)?$/;
 
     $scope.editProduct = function (product) {
-        console.log('Edit product: ' + product._id);
-    }
+        if (product === undefined) {
+            $scope.actionText = 'Add'
+        } else {
+            $scope.actionText = 'Update';
+            $scope.tmp = angular.copy(product);
+        }
+        $('#editProductModal').modal();
+    };
+
+    $scope.updateProduct = function () {
+        $('body').on('hidden.bs.modal', function () {
+            document.location.reload();
+        });
+        if ($scope.actionText === 'Add') {
+            ProductData.createProduct($scope.tmp).then(function () {
+                console.log('create success');
+                $('#editProductModal').modal('hide');
+            }, function (reason) {
+                console.log(reason);
+            });
+        } else {
+            ProductData.updateProduct($scope.tmp).$promise.then(function () {
+                console.log('update success');
+                $('#editProductModal').modal('hide');
+            }, function (reason) {
+                console.log(reason);
+            });
+        }
+    };
+
     $scope.deleteProduct = function (product) {
         ProductData.deleteProduct(product).$promise.then(function () {
             console.log('delete success');

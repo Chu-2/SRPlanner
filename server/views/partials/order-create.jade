@@ -20,7 +20,7 @@
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
           td
-            input.form-control(text="text", ng-model="product.quantity", ng-change="change(order.products)", ng-pattern='/^\\d+$/')
+            input.form-control(text="text", ng-model="product.quantity", ng-change="calcTotal()", ng-pattern="intReg")
       tfoot
         tr
           td(colspan="4") Total: {{ order.total | currency }}

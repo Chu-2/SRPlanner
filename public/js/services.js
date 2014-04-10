@@ -20,11 +20,24 @@ srPlanner.factory('OrderData', function ($resource, $q) {
     }
 });
 
-srPlanner.factory('ProductData', function ($resource) {
+srPlanner.factory('ProductData', function ($resource, $q) {
     var ProductResource = $resource('/api/products/:id', { id: '@_id' });
     return {
+        createProduct: function (product) {
+            var newProduct = new ProductResource(product);
+            var dfd = $q.defer();
+            newProduct.$save().then(function () {
+                dfd.resolve();
+            }, function (response) {
+                dfd.reject(response.data.reason);
+            });
+            return dfd.promise;
+        },
+        updateProduct: function (product) {
+            return ProductResource.save({ id: product._id }, product);
+        },
         deleteProduct: function (product) {
-            return ProductResource.delete({ id: product._id })
+            return ProductResource.delete({ id: product._id });
         },
         getAllProducts: function () {
             return ProductResource.query();

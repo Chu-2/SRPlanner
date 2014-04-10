@@ -2,6 +2,10 @@ body {
     padding-top: 50px;
 }
 
+.margin-left-med {
+    margin-left: 10px;
+}
+
 .cursor-hand {
     cursor: pointer;
 }

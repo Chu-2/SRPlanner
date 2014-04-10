@@ -1,9 +1,32 @@
 .container
   h2 Product List
   hr
+  .modal.fade(id="editProductModal", tabindex="-1", role="dialog", aria-labelledby="modalTitleLabel", aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(data-dismiss="modal", aria-hidden="true") &times;
+          h4.modal-title(id="modalTitleLabel") {{ actionText }} Product
+        .modal-body
+          form(name="productEditForm")
+            .form-group
+              label(for="productCodeInput") Product Code
+              input.form-control(id="productCodeInput", type="text", ng-model="tmp.product_code", required)
+            .form-group
+              label(for="productDescInput") Product Description
+              input.form-control(id="productDescInput", type="text", ng-model="tmp.product_description", required)
+            .form-group
+              label(for="memberPriceInput") Member Price
+              input.form-control(id="memberPriceInput", type="text", ng-model="tmp.member_price", ng-pattern="floatReg", required)
+        .modal-footer
+          button.btn.btn-default(data-dismiss="modal") Cancel
+          button.btn.btn-primary(ng-disabled="productEditForm.$invalid", ng-click="updateProduct()") Submit
+
   .pull-right
     form.form-inline
       .form-group
+        button.btn.btn-primary(ng-click="editProduct()") Add new product
+      .form-group.margin-left-med
         input.form-control(ng-model="filterText", placeholder="Filter")
 
   table.table.table-striped.table-condensed

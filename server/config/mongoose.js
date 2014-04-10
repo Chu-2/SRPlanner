@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var connection_string = '127.0.0.1:27017/srPlanner';
 if (process.env.OPENSHIFT_MONGODB_DB_URL) {
-    connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + 'srPlanner';
+    connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + 'srplanner';
 }
 
 mongoose.connect(connection_string);
