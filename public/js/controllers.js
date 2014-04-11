@@ -20,20 +20,14 @@ srPlanner.controller('OrderListCtrl', function ($scope, $route, OrderData) {
     }
 });
 
-srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData, OrderData) {
+srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData, OrderData, pTotal) {
     $scope.order = {};
     $scope.order.products = ProductData.getAllProducts();
     $scope.intReg = /^\d+$/;
 
-    $scope.order.total = 0.0;
+    $scope.order.total = 0;
     $scope.calcTotal = function () {
-        $scope.order.total = 0.0;
-        for (var i = 0; i < $scope.order.products.length; ++i) {
-            var product = $scope.order.products[i];
-            if (product.hasOwnProperty('quantity') && !isNaN(parseInt(product.quantity, 10))) {
-                $scope.order.total += product.member_price * parseInt(product.quantity, 10);
-            }
-        }
+        $scope.order.total = pTotal($scope.order.products);
     };
 
     $scope.createOrder = function (order) {
@@ -57,6 +51,7 @@ srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
 
     $scope.editProduct = function (product) {
         if (product === undefined) {
+            $scope.tmp = {};
             $scope.actionText = 'Add'
         } else {
             $scope.actionText = 'Update';
@@ -67,7 +62,7 @@ srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
 
     $scope.updateProduct = function () {
         $('body').on('hidden.bs.modal', function () {
-            document.location.reload();
+            location.reload();
         });
         if ($scope.actionText === 'Add') {
             ProductData.createProduct($scope.tmp).then(function () {

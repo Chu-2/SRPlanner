@@ -1,3 +1,14 @@
+srPlanner.value('pTotal', function (products) {
+    var total = 0;
+    for (var i = 0; i < products.length; ++i) {
+        var product = products[i];
+        if (product.hasOwnProperty('quantity') && !isNaN(parseInt(product.quantity, 10))) {
+            total += product.member_price * parseInt(product.quantity, 10);
+        }
+    }
+    return total;
+});
+
 srPlanner.factory('OrderData', function ($resource, $q) {
     var OrderResource = $resource('/api/orders/:id', { id: '@_id' });
     return {
