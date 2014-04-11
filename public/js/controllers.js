@@ -2,12 +2,12 @@ srPlanner.controller('MainCtrl', function ($scope) {
     $scope.message = 'Place holder';
 });
 
-srPlanner.controller('OrderListCtrl', function ($scope, $route, OrderData) {
+srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, OrderData) {
     $scope.orders = OrderData.getAllOrders();
     $scope.predicate = 'created';
 
     $scope.editOrder = function (order) {
-        console.log('Edit order: ' + order._id);
+        $location.path('/order/' + order._id);
     };
 
     $scope.deleteOrder = function (order) {
@@ -20,7 +20,7 @@ srPlanner.controller('OrderListCtrl', function ($scope, $route, OrderData) {
     }
 });
 
-srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData, OrderData, pTotal) {
+srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, ProductData, pTotal) {
     $scope.order = { total: 0 };
     $scope.products = ProductData.getAllProducts();
     $scope.intReg = /^\d+$/;
@@ -29,16 +29,8 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData
         $scope.order.total = pTotal($scope.products);
     };
 
-    $scope.createOrder = function (order) {
-        order.created = new Date();
-        order.products_quantity = [];
-        for (var i = 0; i < $scope.products.length; ++i) {
-            var product = $scope.products[i];
-            if (product.hasOwnProperty('quantity')) {
-                order.products_quantity.push({ _id: product._id, quantity: product.quantity });
-            }
-        }
-        OrderData.createOrder(order).then(function () {
+    $scope.createOrder = function () {
+        OrderData.createOrder($scope.order, $scope.products).then(function () {
             console.log('create success');
             $location.path('/orders')
         }, function (reason) {
@@ -47,8 +39,9 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData
     }
 });
 
-srPlanner.controller('OrderEditCtrl', function ($scope, OrderData) {
-
+srPlanner.controller('OrderEditCtrl', function ($scope, $routeParams, OrderData, ProductData) {
+    $scope.order = OrderData.getOrder($routeParams.id);
+    $scope.products = ProductData.getAllProducts();
 });
 
 srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {

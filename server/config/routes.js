@@ -17,6 +17,11 @@ module.exports = function (app) {
             res.send(order);
         });
     });
+    app.get('/api/orders/:id', function (req, res) {
+        Order.findOne({ _id: req.params.id }).exec(function (err, order) {
+            res.send(order);
+        });
+    });
     app.delete('/api/orders/:id', function (req, res) {
         Order.remove({ _id: req.params.id }).exec(function (err) {
             if (err) {

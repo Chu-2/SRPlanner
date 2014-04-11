@@ -12,7 +12,15 @@ srPlanner.value('pTotal', function (products) {
 srPlanner.factory('OrderData', function ($resource, $q) {
     var OrderResource = $resource('/api/orders/:id', { id: '@_id' });
     return {
-        createOrder: function (order) {
+        createOrder: function (order, products) {
+            order.created = new Date();
+            order.products_quantity = [];
+            for (var i = 0; i < products.length; ++i) {
+                var product = products[i];
+                if (product.hasOwnProperty('quantity')) {
+                    order.products_quantity.push({ _id: product._id, quantity: product.quantity });
+                }
+            }
             var newOrder = new OrderResource(order);
             var dfd = $q.defer();
             newOrder.$save().then(function () {
@@ -21,6 +29,9 @@ srPlanner.factory('OrderData', function ($resource, $q) {
                 dfd.reject(response.data.reason);
             });
             return dfd.promise;
+        },
+        getOrder: function (id) {
+            return OrderResource.get({ id: id });
         },
         deleteOrder: function (order) {
             return OrderResource.delete({ id: order._id });

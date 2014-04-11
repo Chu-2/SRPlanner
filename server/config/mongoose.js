@@ -26,7 +26,6 @@ var productsQuantity = mongoose.Schema({
 var orderSchema = mongoose.Schema({
     name: { type: String, required: '{PATH} is required!' },
     created: Date,
-    updated: { type: Date, default: Date.now },
     total: Number,
     products_quantity: [productsQuantity]
 });

@@ -1,7 +1,7 @@
 .container
-  h2 New Order
+  h2 Edit Order
   hr
-  form(name="newOrderForm")
+  form(name="editOrderForm")
     .row
       .form-group.col-md-6
         label(for="orderName") Order Name
@@ -17,20 +17,19 @@
     table.table.table-striped.table-condensed
       thead
         tr
-          th.col-md-2 Product code
-          th.col-md-7 Product description
-          th.col-md-2 Member price
-          th.col-md-1 Quantity
+          th Product code
+          th Product description
+          th Member price
+          th Quantity
       tbody
         tr(ng-repeat="product in products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
           td {{ product.product_code }}
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
-          td
-            input.form-control(text="text", ng-model="product.quantity", ng-change="calcTotal()", ng-pattern="intReg")
+          td PH
       tfoot
         tr
           td(colspan="4") Total: {{ order.total | currency }}
 
-    button.btn.btn-primary(ng-disabled="newOrderForm.$invalid", ng-click="createOrder()") Create order
+    button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="updateOrder(order)") Update order
     a.btn.btn-default.margin-left-med(href="/orders") Cancel
