@@ -14,16 +14,21 @@ db.once('open', function callback() {
 
 var productSchema = mongoose.Schema({
     product_code: { type: String, required: '{PATH} is required!' },
-    product_description: { type: String, required: '{PATH} is required' },
-    member_price: { type: Number, required: '{PATH} is required' }
+    product_description: { type: String, required: '{PATH} is required!' },
+    member_price: { type: Number, required: '{PATH} is required!' }
 });
 
+var productsQuantity = mongoose.Schema({
+    _id: { type: mongoose.Schema.Types.ObjectId, required: '{PATH} is required!' },
+    quantity: { type: Number, required: '{PATH} is required!' }
+})
+
 var orderSchema = mongoose.Schema({
-    name: { type: String, required: '{PATH} is required' },
+    name: { type: String, required: '{PATH} is required!' },
     created: Date,
     updated: { type: Date, default: Date.now },
     total: Number,
-    products: []
+    products_quantity: [productsQuantity]
 });
 
 var Product = mongoose.model('Product', productSchema);

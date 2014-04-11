@@ -21,17 +21,23 @@ srPlanner.controller('OrderListCtrl', function ($scope, $route, OrderData) {
 });
 
 srPlanner.controller('OrderCreateCtrl', function ($scope, $location, ProductData, OrderData, pTotal) {
-    $scope.order = {};
-    $scope.order.products = ProductData.getAllProducts();
+    $scope.order = { total: 0 };
+    $scope.products = ProductData.getAllProducts();
     $scope.intReg = /^\d+$/;
 
-    $scope.order.total = 0;
     $scope.calcTotal = function () {
-        $scope.order.total = pTotal($scope.order.products);
+        $scope.order.total = pTotal($scope.products);
     };
 
     $scope.createOrder = function (order) {
         order.created = new Date();
+        order.products_quantity = [];
+        for (var i = 0; i < $scope.products.length; ++i) {
+            var product = $scope.products[i];
+            if (product.hasOwnProperty('quantity')) {
+                order.products_quantity.push({ _id: product._id, quantity: product.quantity });
+            }
+        }
         OrderData.createOrder(order).then(function () {
             console.log('create success');
             $location.path('/orders')

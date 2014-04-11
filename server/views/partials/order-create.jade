@@ -13,7 +13,7 @@
           input(type="checkbox", ng-model="hideEmpty")
           | Hide product with empty quantity
       input.form-control(ng-model="filterText", placeholder="Filter", ng-change="hideEmpty = false")
-    
+
     table.table.table-striped.table-condensed
       thead
         tr
@@ -22,7 +22,7 @@
           th.col-md-2 Member price
           th.col-md-1 Quantity
       tbody
-        tr(ng-repeat="product in order.products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
+        tr(ng-repeat="product in products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
           td {{ product.product_code }}
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
