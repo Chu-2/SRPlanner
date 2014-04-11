@@ -7,6 +7,13 @@
         label(for="orderName") Order Name
         input.form-control(id="orderName", type="text", placeholder="Enter name...", ng-model="order.name", required)
 
+    .pull-right
+      .checkbox
+        label
+          input(type="checkbox", ng-model="hideEmpty")
+          | Hide product with empty quantity
+      input.form-control(ng-model="filterText", placeholder="Filter", ng-change="hideEmpty = false")
+    
     table.table.table-striped.table-condensed
       thead
         tr
@@ -15,7 +22,7 @@
           th.col-md-2 Member price
           th.col-md-1 Quantity
       tbody
-        tr(ng-repeat="product in order.products")
+        tr(ng-repeat="product in order.products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
           td {{ product.product_code }}
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
@@ -25,8 +32,6 @@
         tr
           td(colspan="4") Total: {{ order.total | currency }}
 
-    .row
-      .form-group
-        button.btn.btn-primary(ng-disabled="newOrderForm.$invalid", ng-click="createOrder(order)") Create order
-        | &nbsp;
-        a.btn.btn-default(href="/orders") Cancel
+    button.btn.btn-primary(ng-disabled="newOrderForm.$invalid", ng-click="createOrder(order)") Create order
+    | &nbsp;
+    a.btn.btn-default.margin-left-med(href="/orders") Cancel
