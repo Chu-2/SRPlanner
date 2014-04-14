@@ -30,7 +30,8 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, 
     };
 
     $scope.createOrder = function () {
-        OrderData.createOrder($scope.order, $scope.products).then(function () {
+        $scope.order.products = $scope.products;
+        OrderData.createOrder($scope.order).then(function () {
             console.log('create success');
             $location.path('/orders')
         }, function (reason) {
@@ -39,9 +40,16 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, 
     }
 });
 
-srPlanner.controller('OrderEditCtrl', function ($scope, $routeParams, OrderData, ProductData) {
+srPlanner.controller('OrderEditCtrl', function ($scope, $routeParams, OrderData, pTotal) {
     $scope.order = OrderData.getOrder($routeParams.id);
-    $scope.products = ProductData.getAllProducts();
+    $scope.intReg = /^\d+$/;
+
+    $scope.calcTotal = function () {
+        $scope.order.total = pTotal($scope.order.products);
+    };
+
+    $scope.updateProduct = function () {
+    }
 });
 
 srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {

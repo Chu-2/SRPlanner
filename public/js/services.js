@@ -1,26 +1,17 @@
 srPlanner.value('pTotal', function (products) {
     var total = 0;
-    for (var i = 0; i < products.length; ++i) {
-        var product = products[i];
+    products.forEach(function (product) {
         if (product.hasOwnProperty('quantity') && !isNaN(parseInt(product.quantity, 10))) {
             total += product.member_price * parseInt(product.quantity, 10);
         }
-    }
+    });
     return total;
 });
 
 srPlanner.factory('OrderData', function ($resource, $q) {
     var OrderResource = $resource('/api/orders/:id', { id: '@_id' });
     return {
-        createOrder: function (order, products) {
-            order.created = new Date();
-            order.products_quantity = [];
-            for (var i = 0; i < products.length; ++i) {
-                var product = products[i];
-                if (product.hasOwnProperty('quantity')) {
-                    order.products_quantity.push({ _id: product._id, quantity: product.quantity });
-                }
-            }
+        createOrder: function (order) {
             var newOrder = new OrderResource(order);
             var dfd = $q.defer();
             newOrder.$save().then(function () {

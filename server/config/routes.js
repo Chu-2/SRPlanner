@@ -3,7 +3,7 @@ var Product = require('mongoose').model('Product');
 
 module.exports = function (app) {
     app.get('/api/orders', function (req, res) {
-        Order.find({}).exec(function (err, collection) {
+        Order.find({}, '_id name created total').exec(function (err, collection) {
             res.send(collection);
         });
     });
@@ -18,7 +18,24 @@ module.exports = function (app) {
         });
     });
     app.get('/api/orders/:id', function (req, res) {
-        Order.findOne({ _id: req.params.id }).exec(function (err, order) {
+        Order.findOne({ _id: req.params.id }).populate('products._id').exec(function (err, doc) {
+            var products = [];
+            doc.products.forEach(function (product) {
+                if (product._id) {
+                    products.push({
+                        _id: product._id._id,
+                        product_code: product._id.product_code,
+                        product_description: product._id.product_description,
+                        member_price: product._id.member_price,
+                        quantity: product.quantity
+                    });
+                }
+            });
+            var order = {
+                _id: doc._id,
+                name: doc.name,
+                products: products
+            };
             res.send(order);
         });
     });
@@ -48,11 +65,8 @@ module.exports = function (app) {
         });
     });
     app.post('/api/products/:id', function (req, res) {
-        var productData = {
-            product_code: req.body.product_code,
-            product_description: req.body.product_description,
-            member_price: req.body.member_price
-        }
+        var productData = req.body;
+        delete productData._id;
         Product.update({ _id: req.params.id }, productData).exec(function (err) {
             if (err) {
                 res.status(403);

@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 var connection_string = '127.0.0.1:27017/srPlanner';
 if (process.env.OPENSHIFT_MONGODB_DB_URL) {
@@ -12,22 +13,22 @@ db.once('open', function callback() {
     console.log('srPlanner db opened');
 });
 
-var productSchema = mongoose.Schema({
+var productSchema = Schema({
     product_code: { type: String, required: '{PATH} is required!' },
     product_description: { type: String, required: '{PATH} is required!' },
     member_price: { type: Number, required: '{PATH} is required!' }
 });
 
-var productsQuantity = mongoose.Schema({
-    _id: { type: mongoose.Schema.Types.ObjectId, required: '{PATH} is required!' },
-    quantity: { type: Number, required: '{PATH} is required!' }
-})
+var productsQuantity = Schema({
+    _id: { type: Schema.Types.ObjectId, ref: 'Product', required: '{PATH} is required!' },
+    quantity: Number
+});
 
-var orderSchema = mongoose.Schema({
+var orderSchema = Schema({
     name: { type: String, required: '{PATH} is required!' },
-    created: Date,
+    created: { type: Date, default: Date.now },
     total: Number,
-    products_quantity: [productsQuantity]
+    products: [productsQuantity]
 });
 
 var Product = mongoose.model('Product', productSchema);

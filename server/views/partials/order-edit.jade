@@ -21,15 +21,18 @@
           th Product description
           th Member price
           th Quantity
+          th Remaining
       tbody
-        tr(ng-repeat="product in products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
+        tr(ng-repeat="product in order.products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
           td {{ product.product_code }}
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
-          td PH
+          td
+            input.form-control(text="text", ng-model="product.quantity", ng-change="calcTotal()", ng-pattern="intReg")
+          td 0
       tfoot
         tr
-          td(colspan="4") Total: {{ order.total | currency }}
+          td(colspan="5") Total:
 
     button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="updateOrder(order)") Update order
     a.btn.btn-default.margin-left-med(href="/orders") Cancel
