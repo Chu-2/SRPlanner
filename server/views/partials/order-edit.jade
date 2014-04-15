@@ -28,11 +28,11 @@
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
           td
-            input.form-control(text="text", ng-model="product.quantity", ng-change="calcTotal()", ng-pattern="intReg")
+            input.form-control(text="text", ng-model="product.quantity", ng-pattern="intReg")
           td 0
       tfoot
         tr
-          td(colspan="5") Total:
+          td(colspan="5") Total: {{ calcTotal() | currency }}
 
     button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="updateOrder(order)") Update order
     a.btn.btn-default.margin-left-med(href="/orders") Cancel

@@ -21,15 +21,16 @@ srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, Order
 });
 
 srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, ProductData, pTotal) {
-    $scope.order = { total: 0 };
+    $scope.order = {};
     $scope.products = ProductData.getAllProducts();
     $scope.intReg = /^\d+$/;
 
     $scope.calcTotal = function () {
-        $scope.order.total = pTotal($scope.products);
+        return pTotal($scope.products);
     };
 
     $scope.createOrder = function () {
+        $scope.order.total = pTotal($scope.products);
         $scope.order.products = $scope.products;
         OrderData.createOrder($scope.order).then(function () {
             console.log('create success');
@@ -45,7 +46,7 @@ srPlanner.controller('OrderEditCtrl', function ($scope, $routeParams, OrderData,
     $scope.intReg = /^\d+$/;
 
     $scope.calcTotal = function () {
-        $scope.order.total = pTotal($scope.order.products);
+        return pTotal($scope.order.products);
     };
 
     $scope.updateProduct = function () {

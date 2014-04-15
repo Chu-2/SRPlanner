@@ -19,6 +19,10 @@ module.exports = function (app) {
     });
     app.get('/api/orders/:id', function (req, res) {
         Order.findOne({ _id: req.params.id }).populate('products._id').exec(function (err, doc) {
+            if (err) {
+                res.status(400);
+                return res.send({ reason: err.toString() });
+            }
             var products = [];
             doc.products.forEach(function (product) {
                 if (product._id) {

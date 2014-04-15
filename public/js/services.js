@@ -1,4 +1,5 @@
 srPlanner.value('pTotal', function (products) {
+    if (!products) return 0;
     var total = 0;
     products.forEach(function (product) {
         if (product.hasOwnProperty('quantity') && !isNaN(parseInt(product.quantity, 10))) {
