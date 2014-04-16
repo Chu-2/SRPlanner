@@ -22,6 +22,9 @@
           th Member price
           th Quantity
           th Remaining
+          th Sub 1
+          th Sub 2
+          th Sub 3
       tbody
         tr(ng-repeat="product in order.products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
           td {{ product.product_code }}
@@ -29,10 +32,15 @@
           td {{ product.member_price | currency }}
           td
             input.form-control(text="text", ng-model="product.quantity", ng-pattern="intReg")
-          td 0
+          td {{ calcRemaining(product) }}
+          td(ng-repeat="sub in product.subs")
+            input.form-control(text="text", ng-model="sub.value", ng-pattern="intReg")
       tfoot
         tr
           td(colspan="5") Total: {{ calcTotal() | currency }}
+          td {{ calcSubTotal(0) | currency }}
+          td {{ calcSubTotal(1) | currency }}
+          td {{ calcSubTotal(2) | currency }}
 
-    button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="updateOrder(order)") Update order
+    button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="updateOrder()") Update order
     a.btn.btn-default.margin-left-med(href="/orders") Cancel

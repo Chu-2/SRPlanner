@@ -30,26 +30,43 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, 
     };
 
     $scope.createOrder = function () {
-        $scope.order.total = pTotal($scope.products);
+        $scope.order.total = $scope.calcTotal();
         $scope.order.products = $scope.products;
         OrderData.createOrder($scope.order).then(function () {
             console.log('create success');
-            $location.path('/orders')
+            $location.path('/orders');
         }, function (reason) {
             console.log(reason);
         });
     }
 });
 
-srPlanner.controller('OrderEditCtrl', function ($scope, $routeParams, OrderData, pTotal) {
+srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams, OrderData, pTotal, qTotal, sTotal) {
     $scope.order = OrderData.getOrder($routeParams.id);
+    $scope.hideEmpty = true;
     $scope.intReg = /^\d+$/;
+
+    $scope.calcRemaining = function (product) {
+        if (!product.quantity) return 0;
+        return product.quantity - qTotal(product.subs);
+    };
 
     $scope.calcTotal = function () {
         return pTotal($scope.order.products);
     };
 
-    $scope.updateProduct = function () {
+    $scope.calcSubTotal = function (index) {
+        return sTotal($scope.order.products, index);
+    };
+
+    $scope.updateOrder = function () {
+        $scope.order.total = $scope.calcTotal();
+        OrderData.updateOrder($scope.order).$promise.then(function () {
+            console.log('update success');
+            $location.path('/orders');
+        }, function (reason) {
+            console.log(reason);
+        });
     }
 });
 
