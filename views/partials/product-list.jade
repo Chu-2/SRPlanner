@@ -1,0 +1,57 @@
+.container
+  h2 Product List
+  hr
+  .modal.fade(id="editProductModal", tabindex="-1", role="dialog", aria-labelledby="modalTitleLabel", aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(data-dismiss="modal", aria-hidden="true") &times;
+          h4.modal-title(id="modalTitleLabel") {{ actionText }} Product
+        .modal-body
+          form(name="productEditForm")
+            .form-group
+              label(for="productCodeInput") Product Code
+              input.form-control(id="productCodeInput", type="text", ng-model="tmp.product_code", required)
+            .form-group
+              label(for="productDescInput") Product Description
+              input.form-control(id="productDescInput", type="text", ng-model="tmp.product_description", required)
+            .form-group
+              label(for="memberPriceInput") Member Price
+              input.form-control(id="memberPriceInput", type="text", ng-model="tmp.member_price", ng-pattern="floatReg", required)
+        .modal-footer
+          button.btn.btn-default(data-dismiss="modal") Cancel
+          button.btn.btn-primary(ng-disabled="productEditForm.$invalid", ng-click="updateProduct()") Submit
+
+  .pull-right
+    form.form-inline
+      .form-group
+        button.btn.btn-primary(ng-click="editProduct()") Add new product
+      .form-group.margin-left-med
+        input.form-control(ng-model="filterText", placeholder="Filter")
+
+  table.table.table-striped.table-condensed
+    thead
+      tr
+        th.col-md-2
+          a(href="", ng-click="predicate = 'product_code'; reverse = !reverse") Product code&nbsp;
+            span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'product_code' && !reverse")
+            span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'product_code' && reverse")
+        th.col-md-6
+          a(href="", ng-click="predicate = 'product_description'; reverse = !reverse") Product description&nbsp;
+            span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'product_description' && !reverse")
+            span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'product_description' && reverse")
+        th.col-md-2
+          a(href="", ng-click="predicate = 'member_price'; reverse = !reverse") Member Price&nbsp;
+            span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'member_price' && !reverse")
+            span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'member_price' && reverse")
+        th.col-md-1 Edit
+        th.col-md-1 Delete
+    tbody
+      tr(ng-repeat="product in products | filter: filterText | orderBy: predicate: !reverse")
+        td {{ product.product_code }}
+        td {{ product.product_description }}
+        td {{ product.member_price | currency }}
+        td
+          span.glyphicon.glyphicon-edit.cursor-hand(ng-click="editProduct(product)")
+        td
+          span.glyphicon.glyphicon-remove.cursor-hand(ng-click="deleteProduct(product)")
