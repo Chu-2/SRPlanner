@@ -21,8 +21,7 @@ var productSchema = Schema({
 
 var productsQuantity = Schema({
     _id: { type: Schema.Types.ObjectId, ref: 'Product', required: '{PATH} is required!' },
-    quantity: Number,
-    subs: []
+    quantity: Number
 });
 
 var orderSchema = Schema({

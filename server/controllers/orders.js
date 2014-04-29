@@ -41,23 +41,12 @@
             var products = [];
             doc.products.forEach(function (product) {
                 if (product._id) {
-                    if (product.subs.length === 0) product.subs = [
-                        {},
-                        {},
-                        {}
-                    ];
-                    else {
-                        for (var i = 0; i < product.subs.length; ++i) {
-                            if (!product.subs[i]) product.subs[i] = {};
-                        }
-                    }
                     products.push({
                         _id: product._id._id,
                         product_code: product._id.product_code,
                         product_description: product._id.product_description,
                         member_price: product._id.member_price,
-                        quantity: product.quantity,
-                        subs: product.subs
+                        quantity: product.quantity
                     });
                 }
             });

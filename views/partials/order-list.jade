@@ -11,7 +11,7 @@
   table.table.table-condensed.table-hover
     thead
       tr
-        th.col-md-5
+        th.col-md-4
           a(href="", ng-click="predicate = 'name'; reverse = !reverse") Order name&nbsp;
             span.glyphicon.glyphicon-chevron-up(ng-show="predicate === 'name' && !reverse")
             span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'name' && reverse")
@@ -25,6 +25,7 @@
             span.glyphicon.glyphicon-chevron-down(ng-show="predicate === 'total' && reverse")
         th.col-md-1 Edit
         th.col-md-1 Delete
+        th.col-md-1 Planner
     tbody
       tr(ng-repeat="order in orders | filter: filterText | orderBy: predicate: !reverse")
         td {{ order.name }}
@@ -34,3 +35,5 @@
           span.glyphicon.glyphicon-edit.cursor-hand(ng-click="editOrder(order)")
         td
           span.glyphicon.glyphicon-remove.cursor-hand(ng-click="deleteOrder(order)")
+        td
+          span.glyphicon.glyphicon-pencil.cursor-hand(ng-click="planOrder(order)")

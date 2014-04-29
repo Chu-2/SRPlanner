@@ -1,5 +1,4 @@
 srPlanner.controller('MainCtrl', function ($scope) {
-    $scope.message = 'Place holder';
 });
 
 srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, OrderData) {
@@ -17,6 +16,9 @@ srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, Order
         }, function (response) {
             console.log(response);
         });
+    };
+
+    $scope.planOrder = function (order) {
     }
 });
 
@@ -38,25 +40,16 @@ srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, 
         }, function (reason) {
             console.log(reason);
         });
-    }
+    };
 });
 
-srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams, OrderData, pTotal, qTotal, sTotal) {
+srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams, OrderData, pTotal) {
     $scope.order = OrderData.getOrder($routeParams.id);
     $scope.hideEmpty = true;
     $scope.intReg = /^\d+$/;
 
-    $scope.calcRemaining = function (product) {
-        if (!product.quantity) return 0;
-        return product.quantity - qTotal(product.subs);
-    };
-
     $scope.calcTotal = function () {
         return pTotal($scope.order.products);
-    };
-
-    $scope.calcSubTotal = function (index) {
-        return sTotal($scope.order.products, index);
     };
 
     $scope.updateOrder = function () {
@@ -67,7 +60,7 @@ srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams,
         }, function (reason) {
             console.log(reason);
         });
-    }
+    };
 });
 
 srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
@@ -77,7 +70,7 @@ srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
     $scope.editProduct = function (product) {
         if (product === undefined) {
             $scope.tmp = {};
-            $scope.actionText = 'Add'
+            $scope.actionText = 'Add';
         } else {
             $scope.actionText = 'Update';
             $scope.tmp = angular.copy(product);
@@ -109,9 +102,9 @@ srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
     $scope.deleteProduct = function (product) {
         ProductData.deleteProduct(product).$promise.then(function () {
             console.log('delete success');
-            $route.reload()
+            $route.reload();
         }, function (response) {
             console.log(response);
         });
-    }
+    };
 });
