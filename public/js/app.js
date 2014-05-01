@@ -8,7 +8,8 @@ srPlanner.config(function ($routeProvider, $locationProvider) {
         .when('/', { templateUrl: '/partials/main', controller: 'MainCtrl' })
         .when('/orders', { templateUrl: '/partials/order-list', controller: 'OrderListCtrl' })
         .when('/products', { templateUrl: '/partials/product-list', controller: 'ProductListCtrl' })
-        .when('/order/new', { templateUrl: '/partials/order-create', controller: 'OrderCreateCtrl' })
-        .when('/order/:id', { templateUrl: '/partials/order-edit', controller: 'OrderEditCtrl' });
+        .when('/order/new', { templateUrl: '/partials/order-edit', controller: 'OrderCreateCtrl' })
+        .when('/order/:id', { templateUrl: '/partials/order-edit', controller: 'OrderEditCtrl' })
+        .when('/order/:id/plan', { templateUrl: '/partials/order-plan', controller: 'OrderPlanCtrl' });
     $routeProvider.otherwise({ redirectTo: '/' });
 });

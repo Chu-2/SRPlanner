@@ -1,37 +1,27 @@
 .container
-  h2 Edit Order
+  h2 Order Planner
   hr
-  form(name="editOrderForm")
-    .row
-      .form-group.col-md-6
-        label(for="orderName") Order Name
-        input.form-control(id="orderName", type="text", placeholder="Enter name...", ng-model="order.name", required)
+  form(name="plannerForm")
+    .row.col-md-5
+      h3 Order name: {{ order.name }}
 
-    .pull-right
-      .checkbox
-        label
-          input(type="checkbox", ng-model="hideEmpty")
-          | Hide product with empty quantity
-      input.form-control(ng-model="filterText", placeholder="Filter", ng-change="hideEmpty = false")
-
-    table.table.table-striped.table-condensed
+    table.table.table-striped.table-condensed.plan-table
       thead
         tr
-          th Product code
-          th Product description
-          th Member price
-          th Quantity
-          th Remaining
-          th Sub 1
-          th Sub 2
-          th Sub 3
+          th.plan-table-md Product code
+          th.plan-table-lg Product description
+          th.plan-table-md Member price
+          th.plan-table-md Quantity
+          th.plan-table-md Remaining
+          th.plan-table-sm Sub 1
+          th.plan-table-sm Sub 2
+          th.plan-table-sm Sub 3
       tbody
-        tr(ng-repeat="product in order.products | filter: filterText", ng-show="!!product.quantity || !hideEmpty")
+        tr(ng-repeat="product in order.products")
           td {{ product.product_code }}
           td {{ product.product_description }}
           td {{ product.member_price | currency }}
-          td
-            input.form-control(text="text", ng-model="product.quantity", ng-pattern="intReg")
+          td {{ product.quantity }}
           td {{ calcRemaining(product) }}
           td(ng-repeat="sub in product.subs")
             input.form-control(text="text", ng-model="sub.value", ng-pattern="intReg")
@@ -42,5 +32,5 @@
           td {{ calcSubTotal(1) | currency }}
           td {{ calcSubTotal(2) | currency }}
 
-    button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="updateOrder()") Update order
+    button.btn.btn-primary(ng-disabled="plannerForm.$invalid", ng-click="submitPlanner()") Submit
     a.btn.btn-default.margin-left-med(href="/orders") Cancel

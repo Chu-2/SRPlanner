@@ -9,3 +9,19 @@ body {
 .cursor-hand {
     cursor: pointer;
 }
+
+.plan-table {
+    table-layout: fixed;
+}
+
+.plan-table-sm {
+    width: 80px;
+}
+
+.plan-table-md {
+    width: 110px;
+}
+
+.plan-table-lg {
+    width: 400px;
+}

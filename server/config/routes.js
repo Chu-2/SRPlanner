@@ -9,6 +9,8 @@ module.exports = function (app) {
     app.get('/api/orders/:id', orders.getOrder);
     app.delete('/api/orders/:id', orders.removeOrder);
 
+    app.get('/api/orders/:id/subs', orders.getSubOrders);
+
     app.get('/api/products', products.getAllProducts);
     app.post('/api/products', products.createProduct);
     app.post('/api/products/:id', products.updateProduct);

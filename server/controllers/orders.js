@@ -69,4 +69,41 @@
         });
     };
 
+    orders.getSubOrders = function (req, res) {
+        Order.findOne({ _id: req.params.id }).populate('products._id').exec(function (err, doc) {
+            if (err) {
+                res.status(400);
+                return res.send({ reason: err.toString() });
+            }
+            if (!doc) return res.send(404);
+            var products = [];
+            doc.products.forEach(function (product) {
+                if (product._id && product.quantity) {
+                    var subs = [];
+                    if (product.subs.length === 0) {
+                        subs = [{}, {}, {}];
+                    }
+                    else {
+                        for (var i = 0; i < product.subs.length; ++i) {
+                            subs.push({ value: product.subs[i] });
+                        }
+                    }
+                    products.push({
+                        _id: product._id._id,
+                        product_code: product._id.product_code,
+                        product_description: product._id.product_description,
+                        member_price: product._id.member_price,
+                        quantity: product.quantity,
+                        subs: subs
+                    });
+                }
+            });
+            var order = {
+                _id: doc._id,
+                name: doc.name,
+                products: products
+            };
+            res.send(order);
+        });
+    }
 })(module.exports);

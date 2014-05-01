@@ -47,10 +47,10 @@ srPlanner.factory('OrderData', function ($resource, $q) {
             return OrderResource.get({ id: id });
         },
         updateOrder: function (order) {
-            return OrderResource.save({ id: order._id }, order);
+            return OrderResource.save({ id: order._id }, order).$promise;
         },
         deleteOrder: function (order) {
-            return OrderResource.delete({ id: order._id });
+            return OrderResource.delete({ id: order._id }).$promise;
         },
         getAllOrders: function () {
             return OrderResource.query();
@@ -72,13 +72,22 @@ srPlanner.factory('ProductData', function ($resource, $q) {
             return dfd.promise;
         },
         updateProduct: function (product) {
-            return ProductResource.save({ id: product._id }, product);
+            return ProductResource.save({ id: product._id }, product).$promise;
         },
         deleteProduct: function (product) {
-            return ProductResource.delete({ id: product._id });
+            return ProductResource.delete({ id: product._id }).$promise;
         },
         getAllProducts: function () {
             return ProductResource.query();
+        }
+    }
+});
+
+srPlanner.factory('SubOrderData', function ($resource) {
+    var SubOrderResource = $resource('/api/orders/:id/subs', { id: '@_id' });
+    return {
+        getOrder: function (id) {
+            return SubOrderResource.get({ id: id });
         }
     }
 });

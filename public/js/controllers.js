@@ -10,7 +10,7 @@ srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, Order
     };
 
     $scope.deleteOrder = function (order) {
-        OrderData.deleteOrder(order).$promise.then(function () {
+        OrderData.deleteOrder(order).then(function () {
             console.log('delete success');
             $route.reload();
         }, function (response) {
@@ -19,21 +19,21 @@ srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, Order
     };
 
     $scope.planOrder = function (order) {
+        $location.path('/order/' + order._id + '/plan');
     }
 });
 
 srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, ProductData, pTotal) {
     $scope.order = {};
-    $scope.products = ProductData.getAllProducts();
+    $scope.order['products'] = ProductData.getAllProducts();
     $scope.intReg = /^\d+$/;
 
     $scope.calcTotal = function () {
-        return pTotal($scope.products);
+        return pTotal($scope.order.products);
     };
 
-    $scope.createOrder = function () {
+    $scope.submitOrder = function () {
         $scope.order.total = $scope.calcTotal();
-        $scope.order.products = $scope.products;
         OrderData.createOrder($scope.order).then(function () {
             console.log('create success');
             $location.path('/orders');
@@ -52,15 +52,37 @@ srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams,
         return pTotal($scope.order.products);
     };
 
-    $scope.updateOrder = function () {
+    $scope.submitOrder = function () {
         $scope.order.total = $scope.calcTotal();
-        OrderData.updateOrder($scope.order).$promise.then(function () {
+        OrderData.updateOrder($scope.order).then(function () {
             console.log('update success');
             $location.path('/orders');
         }, function (reason) {
             console.log(reason);
         });
     };
+});
+
+srPlanner.controller('OrderPlanCtrl', function ($scope, $routeParams, SubOrderData, pTotal, qTotal, sTotal) {
+    $scope.order = SubOrderData.getOrder($routeParams.id);
+    $scope.intReg = /^\d+$/;
+
+    $scope.calcRemaining = function (product) {
+        if (!product.quantity) return 0;
+        return product.quantity - qTotal(product.subs);
+    };
+
+    $scope.calcTotal = function () {
+        return pTotal($scope.order.products);
+    };
+
+    $scope.calcSubTotal = function (index) {
+        return sTotal($scope.order.products, index);
+    };
+
+    $scope.submitPlanner = function () {
+
+    }
 });
 
 srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
@@ -90,7 +112,7 @@ srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
                 console.log(reason);
             });
         } else {
-            ProductData.updateProduct($scope.tmp).$promise.then(function () {
+            ProductData.updateProduct($scope.tmp).then(function () {
                 console.log('update success');
                 $('#editProductModal').modal('hide');
             }, function (reason) {
@@ -100,7 +122,7 @@ srPlanner.controller('ProductListCtrl', function ($scope, $route, ProductData) {
     };
 
     $scope.deleteProduct = function (product) {
-        ProductData.deleteProduct(product).$promise.then(function () {
+        ProductData.deleteProduct(product).then(function () {
             console.log('delete success');
             $route.reload();
         }, function (response) {
