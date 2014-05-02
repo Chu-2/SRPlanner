@@ -77,17 +77,14 @@
                 return res.send({ reason: err.toString() });
             }
             if (!doc) return res.send(404);
+
+            if (!doc.subs_count) doc.subs_count = 3;
             var products = [];
             doc.products.forEach(function (product) {
                 if (product._id && product.quantity) {
                     var subs = [];
-                    if (product.subs.length === 0) {
-                        subs = [{}, {}, {}];
-                    }
-                    else {
-                        for (var i = 0; i < product.subs.length; ++i) {
-                            product.subs[i] < 0 ? subs.push({}) : subs.push({ value: product.subs[i] });
-                        }
+                    for (var i = 0; i < doc.subs_count; ++i) {
+                        (!product.subs[i] || product.subs[i] < 0) ? subs.push({}) : subs.push({ value: product.subs[i] });
                     }
                     products.push({
                         _id: product._id._id,
@@ -99,12 +96,11 @@
                     });
                 }
             });
-            var count = products.length > 0 ? products[0].subs.length : 0;
             var order = {
                 _id: doc._id,
                 name: doc.name,
-                products: products,
-                subs_count: count
+                subs_count: doc.subs_count,
+                products: products
             };
             res.send(order);
         });
@@ -130,7 +126,12 @@
                 }
             );
         });
-
-        res.send(200);
+        Order.update({ _id: req.params.id }, { $set: { subs_count: orderData.subs_count } }).exec(function (err) {
+            if (err) {
+                res.send(400);
+                return res.send({ reason: err.toString() });
+            }
+            res.send(200);
+        });
     }
 })(module.exports);

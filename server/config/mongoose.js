@@ -29,6 +29,7 @@ var orderSchema = Schema({
     name: { type: String, required: '{PATH} is required!' },
     created: { type: Date, default: Date.now },
     total: Number,
+    subs_count: Number,
     products: [productsQuantity]
 });
 
