@@ -24,7 +24,7 @@
         delete productData._id;
         Product.update({ _id: req.params.id }, productData).exec(function (err) {
             if (err) {
-                res.status(403);
+                res.status(400);
                 return res.send({ reason: err.toString() });
             }
             res.send(200);
@@ -34,7 +34,7 @@
     products.removeProduct = function (req, res) {
         Product.remove({ _id: req.params.id }).exec(function (err) {
             if (err) {
-                res.status(403);
+                res.status(400);
                 return res.send({ reason: err.toString() });
             }
             res.send(204);

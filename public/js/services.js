@@ -88,6 +88,9 @@ srPlanner.factory('SubOrderData', function ($resource) {
     return {
         getOrder: function (id) {
             return SubOrderResource.get({ id: id });
+        },
+        updateOrder: function (order) {
+            return SubOrderResource.save({ id: order._id }, order).$promise;
         }
     }
 });

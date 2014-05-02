@@ -5,17 +5,18 @@
     .row.col-md-5
       h3 Order name: {{ order.name }}
 
-    table.table.table-striped.table-condensed.plan-table
+    table.table.table-striped.table-condensed.table-bordered.plan-table
       thead
         tr
           th.plan-table-md Product code
           th.plan-table-lg Product description
-          th.plan-table-md Member price
+          th.plan-table-md Price
           th.plan-table-md Quantity
           th.plan-table-md Remaining
-          th.plan-table-sm Sub 1
-          th.plan-table-sm Sub 2
-          th.plan-table-sm Sub 3
+          th.plan-table-sm(ng-repeat="n in [order.subs_count] | makeRange") Sub {{ n + 1 }}&nbsp;
+            span.glyphicon.glyphicon-remove.cursor-hand(ng-click="removeColumn($index)")
+          th.plan-table-sm
+            span.glyphicon.glyphicon-plus.cursor-hand(ng-click="addColumn()")
       tbody
         tr(ng-repeat="product in order.products")
           td {{ product.product_code }}
@@ -25,12 +26,12 @@
           td {{ calcRemaining(product) }}
           td(ng-repeat="sub in product.subs")
             input.form-control(text="text", ng-model="sub.value", ng-pattern="intReg")
+          td
       tfoot
         tr
           td(colspan="5") Total: {{ calcTotal() | currency }}
-          td {{ calcSubTotal(0) | currency }}
-          td {{ calcSubTotal(1) | currency }}
-          td {{ calcSubTotal(2) | currency }}
+          td(ng-repeat="n in [order.subs_count] | makeRange") {{ calcSubTotal(n) | currency }}
+          td
 
     button.btn.btn-primary(ng-disabled="plannerForm.$invalid", ng-click="submitPlanner()") Submit
     a.btn.btn-default.margin-left-med(href="/orders") Cancel

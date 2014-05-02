@@ -30,7 +30,8 @@
             input.form-control(text="text", ng-model="product.quantity", ng-pattern="intReg")
       tfoot
         tr
-          td(colspan="4") Total: {{ calcTotal() | currency }}
+          td(colspan="3") Total: {{ calcTotal() | currency }}
+          td {{ calcTotalQuantity() }}
 
     button.btn.btn-primary(ng-disabled="editOrderForm.$invalid", ng-click="submitOrder()") Submit order
     a.btn.btn-default.margin-left-med(href="/orders") Cancel

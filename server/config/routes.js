@@ -10,6 +10,7 @@ module.exports = function (app) {
     app.delete('/api/orders/:id', orders.removeOrder);
 
     app.get('/api/orders/:id/subs', orders.getSubOrders);
+    app.post('/api/orders/:id/subs', orders.updateSubOrders);
 
     app.get('/api/products', products.getAllProducts);
     app.post('/api/products', products.createProduct);

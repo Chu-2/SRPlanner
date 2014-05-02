@@ -16,10 +16,11 @@ body {
 
 .plan-table-sm {
     width: 80px;
+    text-align: center;
 }
 
 .plan-table-md {
-    width: 110px;
+    width: 100px;
 }
 
 .plan-table-lg {

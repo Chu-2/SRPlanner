@@ -23,47 +23,52 @@ srPlanner.controller('OrderListCtrl', function ($scope, $location, $route, Order
     }
 });
 
-srPlanner.controller('OrderCreateCtrl', function ($scope, $location, OrderData, ProductData, pTotal) {
-    $scope.order = {};
-    $scope.order['products'] = ProductData.getAllProducts();
+srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams, OrderData, ProductData, pTotal) {
     $scope.intReg = /^\d+$/;
+
+    if ($routeParams.id) {
+        $scope.order = OrderData.getOrder($routeParams.id);
+        $scope.hideEmpty = true;
+    } else {
+        $scope.order = {};
+        $scope.order['products'] = ProductData.getAllProducts();
+    }
 
     $scope.calcTotal = function () {
         return pTotal($scope.order.products);
     };
 
-    $scope.submitOrder = function () {
-        $scope.order.total = $scope.calcTotal();
-        OrderData.createOrder($scope.order).then(function () {
-            console.log('create success');
-            $location.path('/orders');
-        }, function (reason) {
-            console.log(reason);
-        });
-    };
-});
-
-srPlanner.controller('OrderEditCtrl', function ($scope, $location, $routeParams, OrderData, pTotal) {
-    $scope.order = OrderData.getOrder($routeParams.id);
-    $scope.hideEmpty = true;
-    $scope.intReg = /^\d+$/;
-
-    $scope.calcTotal = function () {
-        return pTotal($scope.order.products);
+    $scope.calcTotalQuantity = function () {
+        if (!$scope.order.products) return 0;
+        return $scope.order.products.reduce(function (prev, curr) {
+            if (curr.hasOwnProperty('quantity') && curr.quantity)
+                return prev + parseInt(curr.quantity, 10);
+            return prev;
+        }, 0);
     };
 
     $scope.submitOrder = function () {
         $scope.order.total = $scope.calcTotal();
-        OrderData.updateOrder($scope.order).then(function () {
-            console.log('update success');
-            $location.path('/orders');
-        }, function (reason) {
-            console.log(reason);
-        });
+
+        if ($routeParams.id) {
+            OrderData.updateOrder($scope.order).then(function () {
+                console.log('update success');
+                $location.path('/orders');
+            }, function (reason) {
+                console.log(reason);
+            });
+        } else {
+            OrderData.createOrder($scope.order).then(function () {
+                console.log('create success');
+                $location.path('/orders');
+            }, function (reason) {
+                console.log(reason);
+            });
+        }
     };
 });
 
-srPlanner.controller('OrderPlanCtrl', function ($scope, $routeParams, SubOrderData, pTotal, qTotal, sTotal) {
+srPlanner.controller('OrderPlanCtrl', function ($scope, $location, $routeParams, SubOrderData, pTotal, qTotal, sTotal) {
     $scope.order = SubOrderData.getOrder($routeParams.id);
     $scope.intReg = /^\d+$/;
 
@@ -80,8 +85,28 @@ srPlanner.controller('OrderPlanCtrl', function ($scope, $routeParams, SubOrderDa
         return sTotal($scope.order.products, index);
     };
 
-    $scope.submitPlanner = function () {
+    $scope.addColumn = function () {
+        $scope.order.products.forEach(function (product) {
+            product.subs.push({});
+        });
+        $scope.order.subs_count++;
+    };
 
+    $scope.removeColumn = function (index) {
+        $scope.order.products.forEach(function (product) {
+            product.subs.splice(index, 1);
+        });
+        $scope.order.subs_count--;
+    };
+
+
+    $scope.submitPlanner = function () {
+        SubOrderData.updateOrder($scope.order).then(function () {
+            console.log('update success');
+            $location.path('/orders');
+        }, function (reason) {
+            console.log(reason);
+        });
     }
 });
 

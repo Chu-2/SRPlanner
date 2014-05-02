@@ -24,7 +24,7 @@
         delete orderData._id;
         Order.update({ _id: req.params.id }, orderData).exec(function (err) {
             if (err) {
-                res.status(403);
+                res.status(400);
                 return res.send({ reason: err.toString() });
             }
             res.send(200);
@@ -46,7 +46,8 @@
                         product_code: product._id.product_code,
                         product_description: product._id.product_description,
                         member_price: product._id.member_price,
-                        quantity: product.quantity
+                        quantity: product.quantity,
+                        subs: product.subs
                     });
                 }
             });
@@ -62,7 +63,7 @@
     orders.removeOrder = function (req, res) {
         Order.remove({ _id: req.params.id }).exec(function (err) {
             if (err) {
-                res.status(403);
+                res.status(400);
                 return res.send({ reason: err.toString() });
             }
             res.send(204);
@@ -85,7 +86,7 @@
                     }
                     else {
                         for (var i = 0; i < product.subs.length; ++i) {
-                            subs.push({ value: product.subs[i] });
+                            product.subs[i] < 0 ? subs.push({}) : subs.push({ value: product.subs[i] });
                         }
                     }
                     products.push({
@@ -98,12 +99,38 @@
                     });
                 }
             });
+            var count = products.length > 0 ? products[0].subs.length : 0;
             var order = {
                 _id: doc._id,
                 name: doc.name,
-                products: products
+                products: products,
+                subs_count: count
             };
             res.send(order);
         });
+    };
+
+    orders.updateSubOrders = function (req, res) {
+        var orderData = req.body;
+        if (orderData.products.length === 0) return res.send(200);
+        orderData.products.forEach(function (product) {
+            var subs = [];
+            for (var i = 0; i < product.subs.length; ++i) {
+                var value = parseInt(product.subs[i].value, 10);
+                value ? subs.push(value) : subs.push(-1);
+            }
+
+            Order.update({ _id: req.params.id, "products._id": product._id },
+                { $set: { "products.$.subs": subs } },
+                function (err) {
+                    if (err) {
+                        res.status(400);
+                        return res.send({ reason: err.toString() });
+                    }
+                }
+            );
+        });
+
+        res.send(200);
     }
 })(module.exports);
